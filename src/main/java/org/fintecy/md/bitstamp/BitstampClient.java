@@ -2,19 +2,15 @@ package org.fintecy.md.bitstamp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.failsafe.Policy;
-import org.fintecy.md.bitstamp.model.CurrenciesResponse;
-import org.fintecy.md.bitstamp.model.Currency;
-import org.fintecy.md.bitstamp.model.ExchangeRate;
-import org.fintecy.md.bitstamp.model.RatesRequest;
+import org.fintecy.md.bitstamp.model.Product;
+import org.fintecy.md.bitstamp.model.ProductsResponse;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static java.net.URI.create;
@@ -53,34 +49,15 @@ public class BitstampClient implements BitstampApi {
     }
 
     @Override
-    public CompletableFuture<ExchangeRate> latest(RatesRequest request) {
-        URI uri = create(rootPath
-                + "/exchange/quote"
-                + "?country=" + request.getCountry()
-                + "&amount=" + request.getAmount()
-                + "&fromCurrency=" + request.getFrom().getCode()
-                + "&toCurrency=" + request.getTo().getCode()
-                + "&isRecipientAmount=" + request.isRecipientAmount()
-        );
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(uri)
-                .build();
-
-        return client.sendAsync(httpRequest, ofString())
-                .thenApply(HttpResponse::body)
-                .thenApply(body -> parseResponse(body, ExchangeRate.class));
-    }
-
-    @Override
-    public CompletableFuture<Set<Currency>> currencies() {
+    public CompletableFuture<List<Product>> products() {
         var httpRequest = HttpRequest.newBuilder()
-                .uri(create(rootPath + "/currencies"))
+                .uri(create(rootPath + "/trading-pairs-info"))
                 .build();
 
         return client.sendAsync(httpRequest, ofString())
                 .thenApply(HttpResponse::body)
-                .thenApply(body -> parseResponse(body, CurrenciesResponse.class))
-                .thenApply(CurrenciesResponse::currencies);
+                .thenApply(body -> parseResponse(body, ProductsResponse.class))
+                .thenApply(ProductsResponse::products);
     }
 
     private <T> T parseResponse(String body, Class<T> tClass) {

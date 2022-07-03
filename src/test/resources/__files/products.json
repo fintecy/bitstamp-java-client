@@ -1,0 +1,22 @@
+[
+  {
+    "trading": "Enabled",
+    "base_decimals": 8,
+    "url_symbol": "btcusd",
+    "name": "BTC/USD",
+    "instant_and_market_orders": "Enabled",
+    "minimum_order": "10.0 USD",
+    "counter_decimals": 2,
+    "description": "Bitcoin / U.S. dollar"
+  },
+  {
+    "trading": "Enabled",
+    "base_decimals": 8,
+    "url_symbol": "ethbtc",
+    "name": "ETH/BTC",
+    "instant_and_market_orders": "Enabled",
+    "minimum_order": "0.0002 BTC",
+    "counter_decimals": 8,
+    "description": "Ether / Bitcoin"
+  }
+]

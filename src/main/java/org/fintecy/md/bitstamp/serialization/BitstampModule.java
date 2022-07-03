@@ -6,7 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.InstantKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateKeyDeserializer;
-import org.fintecy.md.bitstamp.model.ExchangeRate;
+import org.fintecy.md.bitstamp.model.Product;
+import org.fintecy.md.bitstamp.model.ProductsResponse;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -20,9 +21,12 @@ public class BitstampModule extends SimpleModule {
 
     public BitstampModule() {
         super(BitstampModule.class.getSimpleName(), VERSION,
-                Map.of(ExchangeRate.class, ExchangeRateDeserializer.INSTANCE,
+                Map.of(
+                        ProductsResponse.class, ProductsResponseDeserializer.INSTANCE,
+                        Product.class, ProductDeserializer.INSTANCE,
                         Instant.class, InstantDeserializer.INSTANT,
-                        LocalDate.class, LocalDateDeserializer.INSTANCE));
+                        LocalDate.class, LocalDateDeserializer.INSTANCE)
+        );
 
         addKeyDeserializer(LocalDate.class, LocalDateKeyDeserializer.INSTANCE);
         addKeyDeserializer(Instant.class, InstantKeyDeserializer.INSTANCE);
