@@ -22,12 +22,12 @@ publishing {
                 name = 'Bitstamp Client'
                 packaging = 'jar'
                 description = 'Async Java client for Bitstamp.'
-                url = 'https://github.com/fintecy/bitstamp-client'
+                url = 'https://github.com/fintecy/bitstamp-java-client'
 
                 scm {
-                    connection = 'scm:git:https://github.com/fintecy/bitstamp-client.git'
-                    developerConnection = 'scm:git:https://github.com/fintecy/bitstamp-client.git'
-                    url = 'https://fintecy.github.io/bitstamp-client'
+                    connection = 'scm:git:https://github.com/fintecy/bitstamp-java-client.git'
+                    developerConnection = 'scm:git:https://github.com/fintecy/bitstamp-java-client.git'
+                    url = 'https://fintecy.github.io/bitstamp-java-client'
                 }
 
                 licenses {
