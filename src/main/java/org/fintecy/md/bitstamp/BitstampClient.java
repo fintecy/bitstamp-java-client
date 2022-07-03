@@ -2,6 +2,7 @@ package org.fintecy.md.bitstamp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.failsafe.Policy;
+import org.fintecy.md.bitstamp.model.Candle;
 import org.fintecy.md.bitstamp.model.Product;
 import org.fintecy.md.bitstamp.model.ProductsResponse;
 
@@ -46,6 +47,17 @@ public class BitstampClient implements BitstampApi {
     public static <T> T checkRequired(T v, String msg) {
         return ofNullable(v)
                 .orElseThrow(() -> new IllegalArgumentException(msg));
+    }
+
+    @Override
+    public CompletableFuture<Candle> ticker(String productId) {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/ticker/" + productId))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, Candle.class));
     }
 
     @Override
