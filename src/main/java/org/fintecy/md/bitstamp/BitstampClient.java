@@ -72,9 +72,21 @@ public class BitstampClient implements BitstampApi {
     }
 
     @Override
+    public CompletableFuture<List<Transaction>> transactions(String productId, TimePeriod timePeriod) {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/transactions/" + productId + "?time=" + timePeriod.getValue()))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, TransactionResponse.class))
+                .thenApply(MicroType::getValue);
+    }
+
+    @Override
     public CompletableFuture<OrderBook> orderBook(String productId, Grouping grouping) {
         var httpRequest = HttpRequest.newBuilder()
-                .uri(create(rootPath + "/order_book/" + productId))
+                .uri(create(rootPath + "/order_book/" + productId + "?group=" + grouping.getValue()))
                 .build();
 
         return client.sendAsync(httpRequest, ofString())

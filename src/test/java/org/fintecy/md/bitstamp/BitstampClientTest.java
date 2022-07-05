@@ -1,9 +1,7 @@
 package org.fintecy.md.bitstamp;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import org.fintecy.md.bitstamp.model.Candle;
-import org.fintecy.md.bitstamp.model.OrderBook;
-import org.fintecy.md.bitstamp.model.Product;
+import org.fintecy.md.bitstamp.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -74,7 +72,7 @@ class BitstampClientTest {
     @Test
     void should_return_order_book() throws ExecutionException, InterruptedException {
         String productId = "btcusd";
-        stubFor(get("/order_book/" + productId)
+        stubFor(get("/order_book/" + productId + "?group=1")
                 .willReturn(aResponse()
                         .withBodyFile("orderBook.json")));
 
@@ -86,6 +84,35 @@ class BitstampClientTest {
                 .rootPath("http://localhost:7777")
                 .build()
                 .orderBook(productId)
+                .get();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void should_return_transactions() throws ExecutionException, InterruptedException {
+        String productId = "btcusd";
+        stubFor(get("/transactions/" + productId + "?time=hour")
+                .willReturn(aResponse()
+                        .withBodyFile("transactions.json")));
+
+        var expected = List.of(
+                new Transaction(
+                        ofEpochSecond(parseLong("1656961327")),
+                        239874427L,
+                        new BigDecimal("0.00736000"),
+                        TransactionType.type(0),
+                        new BigDecimal("19908.34")),
+                new Transaction(
+                        ofEpochSecond(parseLong("1656961297")),
+                        239874401L,
+                        new BigDecimal("0.00895000"),
+                        TransactionType.type(0),
+                        new BigDecimal("19908.52"))
+        );
+        var actual = bitstampClient()
+                .rootPath("http://localhost:7777")
+                .build()
+                .transactions(productId)
                 .get();
         assertEquals(expected, actual);
     }

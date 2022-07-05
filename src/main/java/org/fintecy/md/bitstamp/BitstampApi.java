@@ -39,6 +39,17 @@ public interface BitstampApi {
     }
 
     /**
+     * @param productId - product id for order book
+     * @return Latest order book
+     * @see <a href="https://www.bitstamp.net/api/v2/order_book/btcusd">test request</a>
+     */
+    CompletableFuture<List<Transaction>> transactions(String productId, TimePeriod timePeriod);
+
+    default CompletableFuture<List<Transaction>> transactions(String productId) {
+        return transactions(productId, TimePeriod.HOUR);
+    }
+
+    /**
      * @return list of supported products
      * @see <a href="https://www.bitstamp.net/api/#trading-pairs-info">docs</a>
      * @see <a href="https://www.bitstamp.net/api/v2/trading-pairs-info/">test request</a>

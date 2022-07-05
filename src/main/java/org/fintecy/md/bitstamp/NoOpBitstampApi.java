@@ -37,6 +37,11 @@ public class NoOpBitstampApi implements BitstampApi {
     }
 
     @Override
+    public CompletableFuture<List<Transaction>> transactions(String productId, TimePeriod timePeriod) {
+        throw new IllegalStateException("not implemented");
+    }
+
+    @Override
     public CompletableFuture<List<Product>> products() {
         throw new IllegalStateException("not implemented");
     }
