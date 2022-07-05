@@ -2,6 +2,7 @@ package org.fintecy.md.bitstamp;
 
 import org.fintecy.md.bitstamp.model.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -18,14 +19,14 @@ public interface BitstampApi {
      * @return Latest candlestick
      * @see <a href="https://www.bitstamp.net/api/v2/ticker/btcusd">test request</a>
      */
-    CompletableFuture<Candle> ticker(String productId);
+    CompletableFuture<Ticker> ticker(String productId);
 
     /**
      * @param productId - product id for candlesticks
      * @return Latest candlestick
      * @see <a href="https://www.bitstamp.net/api/v2/ticker/btcusd">test request</a>
      */
-    CompletableFuture<Candle> hourlyTicker(String productId);
+    CompletableFuture<Ticker> hourlyTicker(String productId);
 
     /**
      * @param productId - product id for order book
@@ -47,6 +48,17 @@ public interface BitstampApi {
 
     default CompletableFuture<List<Transaction>> transactions(String productId) {
         return transactions(productId, TimePeriod.HOUR);
+    }
+
+    /**
+     * @param productId - product id for order book
+     * @return Latest order book
+     * @see <a href="https://www.bitstamp.net/api/v2/order_book/btcusd">test request</a>
+     */
+    CompletableFuture<List<Candle>> ohlc(String productId, Instant start, Instant end, CandleStep step, int limit);
+
+    default CompletableFuture<List<Candle>> ohlc(String productId, CandleStep step, int limit) {
+        return ohlc(productId, Instant.MIN, Instant.MAX, step, limit);
     }
 
     /**

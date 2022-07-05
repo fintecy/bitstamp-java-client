@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,25 +51,25 @@ public class BitstampClient implements BitstampApi {
     }
 
     @Override
-    public CompletableFuture<Candle> ticker(String productId) {
+    public CompletableFuture<Ticker> ticker(String productId) {
         var httpRequest = HttpRequest.newBuilder()
                 .uri(create(rootPath + "/ticker/" + productId))
                 .build();
 
         return client.sendAsync(httpRequest, ofString())
                 .thenApply(HttpResponse::body)
-                .thenApply(body -> parseResponse(body, Candle.class));
+                .thenApply(body -> parseResponse(body, Ticker.class));
     }
 
     @Override
-    public CompletableFuture<Candle> hourlyTicker(String productId) {
+    public CompletableFuture<Ticker> hourlyTicker(String productId) {
         var httpRequest = HttpRequest.newBuilder()
                 .uri(create(rootPath + "/ticker_hour/" + productId))
                 .build();
 
         return client.sendAsync(httpRequest, ofString())
                 .thenApply(HttpResponse::body)
-                .thenApply(body -> parseResponse(body, Candle.class));
+                .thenApply(body -> parseResponse(body, Ticker.class));
     }
 
     @Override
@@ -80,6 +81,23 @@ public class BitstampClient implements BitstampApi {
         return client.sendAsync(httpRequest, ofString())
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> parseResponse(body, TransactionResponse.class))
+                .thenApply(MicroType::getValue);
+    }
+
+    @Override
+    public CompletableFuture<List<Candle>> ohlc(String productId, Instant start, Instant end, CandleStep step, int limit) {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/ohlc/" + productId
+                        + "?step=" + step.getSeconds()
+                        + "&limit=" + limit
+                        + (!start.equals(Instant.MIN) ? "&start=" + start.toEpochMilli() : "")
+                        + (!end.equals(Instant.MAX) ? "&end=" + end.toEpochMilli() : "")
+                ))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, OhlcResponse.class))
                 .thenApply(MicroType::getValue);
     }
 

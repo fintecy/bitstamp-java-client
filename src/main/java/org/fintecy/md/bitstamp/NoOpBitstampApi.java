@@ -2,6 +2,7 @@ package org.fintecy.md.bitstamp;
 
 import org.fintecy.md.bitstamp.model.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -22,12 +23,12 @@ public class NoOpBitstampApi implements BitstampApi {
             .map(Currency::currency)
             .collect(toSet());
     @Override
-    public CompletableFuture<Candle> ticker(String productId) {
+    public CompletableFuture<Ticker> ticker(String productId) {
         throw new IllegalStateException("not implemented");
     }
 
     @Override
-    public CompletableFuture<Candle> hourlyTicker(String productId) {
+    public CompletableFuture<Ticker> hourlyTicker(String productId) {
         throw new IllegalStateException("not implemented");
     }
 
@@ -38,6 +39,11 @@ public class NoOpBitstampApi implements BitstampApi {
 
     @Override
     public CompletableFuture<List<Transaction>> transactions(String productId, TimePeriod timePeriod) {
+        throw new IllegalStateException("not implemented");
+    }
+
+    @Override
+    public CompletableFuture<List<Candle>> ohlc(String productId, Instant start, Instant end, CandleStep step, int limit) {
         throw new IllegalStateException("not implemented");
     }
 

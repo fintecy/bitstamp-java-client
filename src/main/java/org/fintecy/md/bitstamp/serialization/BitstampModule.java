@@ -23,8 +23,10 @@ public class BitstampModule extends SimpleModule {
                 Map.of(
                         ProductsResponse.class, ProductsResponseDeserializer.INSTANCE,
                         TransactionResponse.class, TransactionResponseDeserializer.INSTANCE,
+                        OhlcResponse.class, OhlcResponseDeserializer.INSTANCE,
                         Product.class, ProductDeserializer.INSTANCE,
                         Candle.class, CandleDeserializer.INSTANCE,
+                        Ticker.class, TickerDeserializer.INSTANCE,
                         Transaction.class, TransactionDeserializer.INSTANCE,
                         OrderBook.class, OrderBookDeserializer.INSTANCE,
                         Instant.class, InstantDeserializer.INSTANT,

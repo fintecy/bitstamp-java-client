@@ -5,6 +5,7 @@ import org.fintecy.md.bitstamp.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -24,7 +25,7 @@ class BitstampClientTest {
                 .willReturn(aResponse()
                         .withBodyFile("ticker.json")));
 
-        var expected = new Candle(
+        var expected = new Ticker(
                 new BigDecimal("19381.29"),
                 new BigDecimal("19191.99"),
                 ofEpochSecond(parseLong("1656874337")),
@@ -50,7 +51,7 @@ class BitstampClientTest {
                 .willReturn(aResponse()
                         .withBodyFile("ticker.json")));
 
-        var expected = new Candle(
+        var expected = new Ticker(
                 new BigDecimal("19381.29"),
                 new BigDecimal("19191.99"),
                 ofEpochSecond(parseLong("1656874337")),
@@ -113,6 +114,49 @@ class BitstampClientTest {
                 .rootPath("http://localhost:7777")
                 .build()
                 .transactions(productId)
+                .get();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void should_return_ohlc() throws ExecutionException, InterruptedException {
+        String productId = "btcusd";
+        var step = CandleStep.HOUR;
+        int limit = 24;
+        var start = Instant.ofEpochSecond(1656961327);
+        var end = Instant.ofEpochSecond(1656961297);
+        stubFor(get("/ohlc/" + productId
+                + "?step=" + step.getSeconds()
+                + "&limit=" + limit
+                + "&start=" + start.toEpochMilli()
+                + "&end=" + end.toEpochMilli())
+                .willReturn(aResponse()
+                        .withBodyFile("ohlc.json")));
+
+        var expected = List.of(
+                new Candle(
+                        productId,
+                        new BigDecimal("19381.29"),
+                        new BigDecimal("19191.99"),
+                        ofEpochSecond(parseLong("1656874337")),
+                        new BigDecimal("1646.67158308"),
+                        new BigDecimal("18763.96"),
+                        new BigDecimal("19232.76")
+                ),
+                new Candle(
+                        productId,
+                        new BigDecimal("19381.29"),
+                        new BigDecimal("19191.99"),
+                        ofEpochSecond(parseLong("1656874337")),
+                        new BigDecimal("1646.67158308"),
+                        new BigDecimal("18763.96"),
+                        new BigDecimal("19232.76")
+                )
+        );
+        var actual = bitstampClient()
+                .rootPath("http://localhost:7777")
+                .build()
+                .ohlc(productId, start, end, step, limit)
                 .get();
         assertEquals(expected, actual);
     }
