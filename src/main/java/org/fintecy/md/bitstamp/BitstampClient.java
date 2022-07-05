@@ -2,9 +2,7 @@ package org.fintecy.md.bitstamp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.failsafe.Policy;
-import org.fintecy.md.bitstamp.model.Candle;
-import org.fintecy.md.bitstamp.model.Product;
-import org.fintecy.md.bitstamp.model.ProductsResponse;
+import org.fintecy.md.bitstamp.model.*;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -12,11 +10,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.util.Optional.ofNullable;
+import static org.fintecy.md.bitstamp.NoOpBitstampApi.SUPPORTED_CURRENCIES;
 
 public class BitstampClient implements BitstampApi {
     private final String rootPath;
@@ -61,6 +61,28 @@ public class BitstampClient implements BitstampApi {
     }
 
     @Override
+    public CompletableFuture<Candle> hourlyTicker(String productId) {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/ticker_hour/" + productId))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, Candle.class));
+    }
+
+    @Override
+    public CompletableFuture<OrderBook> orderBook(String productId, Grouping grouping) {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/order_book/" + productId))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, OrderBook.class));
+    }
+
+    @Override
     public CompletableFuture<List<Product>> products() {
         var httpRequest = HttpRequest.newBuilder()
                 .uri(create(rootPath + "/trading-pairs-info"))
@@ -70,6 +92,11 @@ public class BitstampClient implements BitstampApi {
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> parseResponse(body, ProductsResponse.class))
                 .thenApply(ProductsResponse::products);
+    }
+
+    @Override
+    public CompletableFuture<Set<Currency>> currencyPairs() {
+        return CompletableFuture.completedFuture(SUPPORTED_CURRENCIES);
     }
 
     private <T> T parseResponse(String body, Class<T> tClass) {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.InstantKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateKeyDeserializer;
 import org.fintecy.md.bitstamp.model.Candle;
+import org.fintecy.md.bitstamp.model.OrderBook;
 import org.fintecy.md.bitstamp.model.Product;
 import org.fintecy.md.bitstamp.model.ProductsResponse;
 
@@ -26,6 +27,7 @@ public class BitstampModule extends SimpleModule {
                         ProductsResponse.class, ProductsResponseDeserializer.INSTANCE,
                         Product.class, ProductDeserializer.INSTANCE,
                         Candle.class, CandleDeserializer.INSTANCE,
+                        OrderBook.class, OrderBookDeserializer.INSTANCE,
                         Instant.class, InstantDeserializer.INSTANT,
                         LocalDate.class, LocalDateDeserializer.INSTANCE)
         );

@@ -2,6 +2,7 @@ package org.fintecy.md.bitstamp;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.fintecy.md.bitstamp.model.Candle;
+import org.fintecy.md.bitstamp.model.OrderBook;
 import org.fintecy.md.bitstamp.model.Product;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.Long.parseLong;
+import static java.math.BigDecimal.valueOf;
 import static java.time.Instant.ofEpochSecond;
 import static org.fintecy.md.bitstamp.BitstampClient.bitstampClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,51 @@ class BitstampClientTest {
                 .rootPath("http://localhost:7777")
                 .build()
                 .ticker(productId)
+                .get();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void should_return_hourly_candles() throws ExecutionException, InterruptedException {
+        String productId = "btcusd";
+        stubFor(get("/ticker_hour/" + productId)
+                .willReturn(aResponse()
+                        .withBodyFile("ticker.json")));
+
+        var expected = new Candle(
+                new BigDecimal("19381.29"),
+                new BigDecimal("19191.99"),
+                ofEpochSecond(parseLong("1656874337")),
+                new BigDecimal("19181.40"),
+                new BigDecimal("19164.68"),
+                new BigDecimal("1646.67158308"),
+                new BigDecimal("18763.96"),
+                new BigDecimal("19194.60"),
+                new BigDecimal("19232.76")
+        );
+        var actual = bitstampClient()
+                .rootPath("http://localhost:7777")
+                .build()
+                .hourlyTicker(productId)
+                .get();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void should_return_order_book() throws ExecutionException, InterruptedException {
+        String productId = "btcusd";
+        stubFor(get("/order_book/" + productId)
+                .willReturn(aResponse()
+                        .withBodyFile("orderBook.json")));
+
+        var expected = new OrderBook(
+                ofEpochSecond(parseLong("1656874337")),
+                List.of(valueOf(19181.40), valueOf(19180.23)),
+                List.of(valueOf(19191.99), valueOf(19381.29)));
+        var actual = bitstampClient()
+                .rootPath("http://localhost:7777")
+                .build()
+                .orderBook(productId)
                 .get();
         assertEquals(expected, actual);
     }
