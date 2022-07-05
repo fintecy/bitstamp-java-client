@@ -125,6 +125,17 @@ public class BitstampClient implements BitstampApi {
     }
 
     @Override
+    public CompletableFuture<ExchangeRate> eurusd() {
+        var httpRequest = HttpRequest.newBuilder()
+                .uri(create(rootPath + "/eur_usd"))
+                .build();
+
+        return client.sendAsync(httpRequest, ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> parseResponse(body, EurUsdRate.class));
+    }
+
+    @Override
     public CompletableFuture<Set<Currency>> currencyPairs() {
         return CompletableFuture.completedFuture(SUPPORTED_CURRENCIES);
     }

@@ -24,7 +24,7 @@ public interface BitstampApi {
     /**
      * @param productId - product id for candlesticks
      * @return Latest candlestick
-     * @see <a href="https://www.bitstamp.net/api/v2/ticker/btcusd">test request</a>
+     * @see <a href="https://www.bitstamp.net/api/v2/ticker_hour/btcusd">test request</a>
      */
     CompletableFuture<Ticker> hourlyTicker(String productId);
 
@@ -42,7 +42,7 @@ public interface BitstampApi {
     /**
      * @param productId - product id for order book
      * @return Latest order book
-     * @see <a href="https://www.bitstamp.net/api/v2/order_book/btcusd">test request</a>
+     * @see <a href="https://www.bitstamp.net/api/v2/transactions/btcusd">test request</a>
      */
     CompletableFuture<List<Transaction>> transactions(String productId, TimePeriod timePeriod);
 
@@ -53,7 +53,7 @@ public interface BitstampApi {
     /**
      * @param productId - product id for order book
      * @return Latest order book
-     * @see <a href="https://www.bitstamp.net/api/v2/order_book/btcusd">test request</a>
+     * @see <a href="https://www.bitstamp.net/api/v2/ohlc/btcusd">test request</a>
      */
     CompletableFuture<List<Candle>> ohlc(String productId, Instant start, Instant end, CandleStep step, int limit);
 
@@ -67,6 +67,13 @@ public interface BitstampApi {
      * @see <a href="https://www.bitstamp.net/api/v2/trading-pairs-info/">test request</a>
      */
     CompletableFuture<List<Product>> products();
+
+    /**
+     * @return list of supported products
+     * @see <a href="https://www.bitstamp.net/api/#conversion-rate">">docs</a>
+     * @see <a href="https://www.bitstamp.net/api/v2/eur_usd/">test request</a>
+     */
+    CompletableFuture<ExchangeRate> eurusd();
 
     CompletableFuture<Set<Currency>> currencyPairs();
 }

@@ -53,6 +53,11 @@ public class NoOpBitstampApi implements BitstampApi {
     }
 
     @Override
+    public CompletableFuture<ExchangeRate> eurusd() {
+        throw new IllegalStateException("not implemented");
+    }
+
+    @Override
     public CompletableFuture<Set<Currency>> currencyPairs() {
         return CompletableFuture.completedFuture(SUPPORTED_CURRENCIES);
     }

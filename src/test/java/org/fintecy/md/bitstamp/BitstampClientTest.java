@@ -180,4 +180,19 @@ class BitstampClientTest {
                 .get();
         assertEquals(expected, actual);
     }
+
+    @Test
+    void should_return_eurusd_rate() throws ExecutionException, InterruptedException {
+        stubFor(get("/eur_usd")
+                .willReturn(aResponse()
+                        .withBodyFile("eurusd.json")));
+
+        var expected = new EurUsdRate(new BigDecimal("1.2"), new BigDecimal("1.1"));
+        var actual = bitstampClient()
+                .rootPath("http://localhost:7777")
+                .build()
+                .eurusd()
+                .get();
+        assertEquals(expected, actual);
+    }
 }

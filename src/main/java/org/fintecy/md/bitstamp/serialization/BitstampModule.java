@@ -21,18 +21,19 @@ public class BitstampModule extends SimpleModule {
     public BitstampModule() {
         super(BitstampModule.class.getSimpleName(), VERSION,
                 Map.of(
-                        ProductsResponse.class, ProductsResponseDeserializer.INSTANCE,
-                        TransactionResponse.class, TransactionResponseDeserializer.INSTANCE,
-                        OhlcResponse.class, OhlcResponseDeserializer.INSTANCE,
-                        Product.class, ProductDeserializer.INSTANCE,
                         Candle.class, CandleDeserializer.INSTANCE,
                         Ticker.class, TickerDeserializer.INSTANCE,
-                        Transaction.class, TransactionDeserializer.INSTANCE,
-                        OrderBook.class, OrderBookDeserializer.INSTANCE,
                         Instant.class, InstantDeserializer.INSTANT,
                         LocalDate.class, LocalDateDeserializer.INSTANCE)
         );
 
+        addDeserializer(ProductsResponse.class, ProductsResponseDeserializer.INSTANCE);
+        addDeserializer(TransactionResponse.class, TransactionResponseDeserializer.INSTANCE);
+        addDeserializer(OhlcResponse.class, OhlcResponseDeserializer.INSTANCE);
+        addDeserializer(Product.class, ProductDeserializer.INSTANCE);
+        addDeserializer(EurUsdRate.class, EurUsdRateDeserializer.INSTANCE);
+        addDeserializer(Transaction.class, TransactionDeserializer.INSTANCE);
+        addDeserializer(OrderBook.class, OrderBookDeserializer.INSTANCE);
         addKeyDeserializer(LocalDate.class, LocalDateKeyDeserializer.INSTANCE);
         addKeyDeserializer(Instant.class, InstantKeyDeserializer.INSTANCE);
     }
