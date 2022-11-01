@@ -70,7 +70,7 @@ public interface BitstampApi {
 
     /**
      * @return list of supported products
-     * @see <a href="https://www.bitstamp.net/api/#conversion-rate">">docs</a>
+     * @see <a href="https://www.bitstamp.net/api/#conversion-rate">docs</a>
      * @see <a href="https://www.bitstamp.net/api/v2/eur_usd/">test request</a>
      */
     CompletableFuture<ExchangeRate> eurusd();
