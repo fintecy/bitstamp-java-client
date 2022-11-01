@@ -4,6 +4,11 @@ plugins {
     id 'signing'
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
 dependencies {
     implementation "dev.failsafe:failsafe:${failsafeVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -20,7 +25,7 @@ test {
 }
 
 wrapper {
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.5.1'
 }
 
 repositories {
